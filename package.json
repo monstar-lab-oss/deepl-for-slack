@@ -13,8 +13,10 @@
   "license": "MIT",
   "dependencies": {
     "@slack/bolt": "^2.6.0",
+    "@types/emoji-js": "^3.4.0",
     "@types/node": "^14.14.20",
     "dotenv": "^8.2.0",
+    "emoji-js": "3.4.0",
     "nodemon": "^2.0.6",
     "ts-node": "^8.10.2",
     "typescript": "^3.9.5"

@@ -1,6 +1,7 @@
 import { default as axios, AxiosInstance } from "axios";
 import qs from "qs";
 import { Logger } from "@slack/logger";
+import { EmojiConvertor } from "emoji-js";
 
 export class DeepLApi {
   private authKey: string;
@@ -16,11 +17,16 @@ export class DeepLApi {
   }
 
   async translate(text: string, targetLanguage: string): Promise<string | null> {
+    const converter = new EmojiConvertor();
+
+    converter.replace_mode = "unified";
+    converter.allow_native = true;
+
     return this.axiosInstance({
       url: "/translate",
       data: qs.stringify({
         auth_key: this.authKey,
-        text: text,
+        text: converter.replace_colons(text),
         target_lang: targetLanguage.toUpperCase()
       }),
       headers: {
