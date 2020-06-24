@@ -1,4 +1,4 @@
-import { ConversationsRepliesResponse, Message, Permalink } from './types/conversations-replies';
+import { ConversationsRepliesResponse, Message, Permalink, UserProfileResponse } from './types/conversations-replies';
 import { ReactionAddedEvent } from './types/reaction-added';
 import { reactionToLang } from './languages';
 import { WebClient } from '@slack/web-api';
@@ -43,13 +43,23 @@ export async function sayInThread(client: WebClient, channel: string, text: stri
   const trimmedMessage = originalMessage && originalMessage.length > 50 ? `${originalMessage.substring(0, 49)}…` : originalMessage;
   let footer = trimmedMessage;
 
+  if (message.user) {
+    const { profile } = await client.users.profile.get({
+      user: message.user
+    }) as UserProfileResponse;
+
+    if (profile?.real_name) {
+      footer = `${footer}\nOriginally sent by: ${profile.real_name}`;
+    }
+  }
+
   if (message.ts) {
     const { permalink } = await client.chat.getPermalink({
       channel,
       message_ts: message.ts
     }) as Permalink;
 
-    footer = `${trimmedMessage} <${permalink}|View original message>`;
+    footer = `${footer}\n*<${permalink}|View original message>*`;
   }
 
   return await client.chat.postMessage({

@@ -34,6 +34,18 @@ export interface Permalink {
   permalink?: string;
 }
 
+export interface UserProfileResponse {
+  ok?: boolean;
+  profile?: UserProfile;
+}
+
+export interface UserProfile {
+  real_name?: string;
+  display_name?: string;
+  real_name_normalized?: string;
+  display_name_normalized?: string;
+}
+
 export interface BotProfile {
   id?: string;
   deleted?: boolean;
