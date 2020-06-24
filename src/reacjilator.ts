@@ -1,4 +1,4 @@
-import { ConversationsRepliesResponse, Message } from './types/conversations-replies';
+import { ConversationsRepliesResponse, Message, Permalink } from './types/conversations-replies';
 import { ReactionAddedEvent } from './types/reaction-added';
 import { reactionToLang } from './languages';
 import { WebClient } from '@slack/web-api';
@@ -39,15 +39,26 @@ export function isAlreadyPosted(replies: ConversationsRepliesResponse, translate
 }
 
 export async function sayInThread(client: WebClient, channel: string, text: string, message: Message) {
-  const original = message.text;
+  const originalMessage = message.text;
+  const trimmedMessage = originalMessage && originalMessage.length > 50 ? `${originalMessage.substring(0, 49)}…` : originalMessage;
+  let footer = trimmedMessage;
+
+  if (message.ts) {
+    const { permalink } = await client.chat.getPermalink({
+      channel,
+      message_ts: message.ts
+    }) as Permalink;
+
+    footer = `${trimmedMessage} <${permalink}|View original message>`;
+  }
 
   return await client.chat.postMessage({
     channel,
-    text: "",
+    text,
     attachments: [
       {
-        text,
-        footer: original && original.length > 50 ? `${original.substring(0, 49)}…` : original
+        text: "",
+        footer
       }
     ],
     thread_ts: message.thread_ts ? message.thread_ts : message.ts
