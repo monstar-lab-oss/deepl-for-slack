@@ -28,6 +28,12 @@ export interface Message {
   parent_user_id?: string;
 }
 
+export interface Permalink {
+  ok?: boolean;
+  channel?: string;
+  permalink?: string;
+}
+
 export interface BotProfile {
   id?: string;
   deleted?: boolean;
