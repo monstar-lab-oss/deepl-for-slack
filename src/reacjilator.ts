@@ -39,9 +39,17 @@ export function isAlreadyPosted(replies: ConversationsRepliesResponse, translate
 }
 
 export async function sayInThread(client: WebClient, channel: string, text: string, message: Message) {
+  const original = message.text;
+
   return await client.chat.postMessage({
     channel,
-    text: `${text}\n\n> Original: ${message.text}`,
+    text: "",
+    attachments: [
+      {
+        text,
+        footer: original && original.length > 50 ? `${original.substring(0, 49)}…` : original
+      }
+    ],
     thread_ts: message.thread_ts ? message.thread_ts : message.ts
   });
 }
