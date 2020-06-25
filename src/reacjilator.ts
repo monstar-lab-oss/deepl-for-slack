@@ -62,15 +62,59 @@ export async function sayInThread(client: WebClient, channel: string, text: stri
     footer = `${footer}\n*<${permalink}|View original message>*`;
   }
 
+  const translationBlock = {
+    type: "section",
+    text: {
+      type: "mrkdwn",
+      text
+    },
+    accessory: {
+      type: "overflow",
+      confirm: {
+        title: {
+          type: "plain_text",
+          text: "Are you sure?"
+        },
+        text: {
+          type: "mrkdwn",
+          text: "Are you sure you want to delete this translation? 🗑️"
+        },
+        confirm: {
+          type: "plain_text",
+          text: "Do it!"
+        },
+        deny: {
+          type: "plain_text",
+          text: "Stop, I've changed my mind!"
+        }
+      },
+      options: [
+        {
+          text: {
+            type: "plain_text",
+            text: "Delete this translation"
+          },
+          value: "delete"
+        }
+      ],
+      action_id: "overflow"
+    }
+  }
+
+  const footerBlock = {
+    type: "context",
+    elements: [
+      {
+        type: "mrkdwn",
+        text: footer
+      }
+    ]
+  }
+
   return await client.chat.postMessage({
     channel,
     text,
-    attachments: [
-      {
-        text: "",
-        footer
-      }
-    ],
+    blocks: [translationBlock, footerBlock],
     thread_ts: message.thread_ts ? message.thread_ts : message.ts
   });
 }
