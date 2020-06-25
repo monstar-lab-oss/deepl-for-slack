@@ -97,6 +97,15 @@ app.event("reaction_added", async ({ body, client }) => {
   }
 });
 
+app.action("overflow", async ({ ack, respond }) => {
+  await ack();
+  await respond({
+    text: "I deleted the translation. I hope that’s what you really wanted!",
+    response_type: "ephemeral",
+    delete_original: true
+  });
+});
+
 // -----------------------------
 // starting the app
 // -----------------------------
