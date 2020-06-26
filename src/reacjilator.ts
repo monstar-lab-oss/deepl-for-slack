@@ -111,10 +111,18 @@ export async function sayInThread(client: WebClient, channel: string, text: stri
     ]
   }
 
-  return await client.chat.postMessage({
-    channel,
-    text,
-    blocks: [translationBlock, footerBlock],
-    thread_ts: message.thread_ts ? message.thread_ts : message.ts
-  });
+  try {
+    await client.chat.postMessage({
+      channel,
+      text,
+      blocks: [translationBlock, footerBlock],
+      thread_ts: message.thread_ts ? message.thread_ts : message.ts
+    });
+  } catch {
+    await client.chat.postMessage({
+      channel,
+      text: "I’m terribly sorry, but I was unable to post the translation. It was likely too long for Slack to handle.",
+      thread_ts: message.thread_ts ? message.thread_ts : message.ts
+    })
+  }
 }
