@@ -86,7 +86,8 @@ app.event("reaction_added", async ({ body, client }) => {
   if (replies.messages && replies.messages.length > 0) {
     const message = replies.messages[0];
     if (message.text) {
-      const translatedText = await deepL.translate(message.text, lang);
+      const withoutUsernames = message.text.replace(/<[@!]\S+>/gi, '👤');
+      const translatedText = await deepL.translate(withoutUsernames, lang);
       if (translatedText == null) {
         return;
       }
