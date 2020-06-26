@@ -65,6 +65,7 @@ app.view("new-runner", async ({ body, ack }) => {
 // -----------------------------
 
 import { ReactionAddedEvent } from './types/reaction-added';
+import { ActionResponse, ActionBodyResponse } from './types/actions';
 
 app.event("reaction_added", async ({ body, client }) => {
   const event = body.event as ReactionAddedEvent;
@@ -97,13 +98,24 @@ app.event("reaction_added", async ({ body, client }) => {
   }
 });
 
-app.action("overflow", async ({ ack, respond }) => {
+app.action("overflow", async ({ ack, action, body, client }) => {
+  const { selected_option } = action as ActionResponse;
+  const { container, user } = body as ActionBodyResponse;
+
   await ack();
-  await respond({
-    text: "I deleted the translation. I hope that’s what you really wanted!",
-    response_type: "ephemeral",
-    delete_original: true
-  });
+
+  if (selected_option?.value === "delete" && container?.channel_id && container.message_ts && container.thread_ts && user?.id) {
+    await client.chat.delete({
+      channel: container.channel_id,
+      ts: container.message_ts
+    });
+    await client.chat.postEphemeral({
+      channel: container.channel_id,
+      user: user.id,
+      text: "I deleted the translation. I hope that’s what you really wanted!",
+      thread_ts: container.thread_ts
+    });
+  }
 });
 
 // -----------------------------
