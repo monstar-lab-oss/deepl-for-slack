@@ -96,7 +96,7 @@ app.event("reaction_added", async ({ body, client }) => {
       if (reacjilator.isAlreadyPosted(replies, translatedText)) {
         return;
       }
-      await reacjilator.sayInThread(client, channelId, translatedText, message);
+      await reacjilator.sayInThread(client, channelId, translatedText, message, withoutUsernames);
     }
   }
 });

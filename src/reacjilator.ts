@@ -38,10 +38,8 @@ export function isAlreadyPosted(replies: ConversationsRepliesResponse, translate
   return false;
 }
 
-export async function sayInThread(client: WebClient, channel: string, text: string, message: Message) {
-  const originalMessage = message.text;
-  const trimmedMessage = originalMessage && originalMessage.length > 50 ? `${originalMessage.substring(0, 49)}…` : originalMessage;
-  let footer = trimmedMessage;
+export async function sayInThread(client: WebClient, channel: string, text: string, message: Message, alteredMessageText: string) {
+  let footer = alteredMessageText.length > 50 ? `${alteredMessageText.substring(0, 49)}…` : alteredMessageText;
 
   if (message.user) {
     const { profile } = await client.users.profile.get({
