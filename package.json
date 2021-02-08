@@ -12,7 +12,7 @@
   "author": "Kazuhiro Sera (@seratch)",
   "license": "MIT",
   "dependencies": {
-    "@slack/bolt": "^2.6.0",
+    "@slack/bolt": "^2.6.1",
     "@types/emoji-js": "^3.4.0",
     "@types/node": "^14.14.20",
     "dotenv": "^8.2.0",
