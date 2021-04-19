@@ -10,6 +10,20 @@ export const langToReaction: any = {
   "pl": ":flag-pl:",
   "pt": ":flag-pt:",
   "ru": ":flag-ru:",
+
+  "bg": ":flag-bg:",
+  "cs": ":flag-cz:",
+  "da": ":flag-dk:",
+  "et": ":flag-ee:",
+  "fi": ":flag-fi:",
+  "el": ":flag-gr:",
+  "hu": ":flag-hu:",
+  "lv": ":flag-lv:",
+  "lt": ":flag-lt:",
+  "ro": ":flag-ro:",
+  "sk": ":flag-sk:",
+  "sl": ":flag-si:",
+  "sv": ":flag-se:",
 };
 
 export const langToName: any = {
@@ -24,6 +38,20 @@ export const langToName: any = {
   "pl": "Polish",
   "pt": "Portuguese",
   "ru": "Russian",
+
+  "bg": "Bulgarian",
+  "cs": "Czech",
+  "da": "Danish",
+  "et": "Estonian",
+  "fi": "Finnish",
+  "el": "Greek",
+  "hu": "Hungarian",
+  "lv": "Latvian",
+  "lt": "Lithuanian",
+  "ro": "Romanian",
+  "sk": "Slovak",
+  "sl": "Slovenian",
+  "sv": "Swedish",
 };
 
 export const reactionToLang: any = {
@@ -168,4 +196,18 @@ export const reactionToLang: any = {
   "yt": "fr",
   "zm": "en",
   "zw": "en",
+
+  "bg": "bg",
+  "cz": "cs",
+  "dk": "da",
+  "ee": "et",
+  "fi": "fi",
+  "gr": "el",
+  "hu": "hu",
+  "lv": "lv",
+  "lt": "lt",
+  "ro": "ro",
+  "sk": "sk",
+  "si": "sl",
+  "se": "sv",
 };
