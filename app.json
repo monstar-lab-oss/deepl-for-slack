@@ -2,13 +2,7 @@
   "name": "DeepL API App for Slack",
   "description": "Slack app for DeepL Translate API users",
   "repository": "https://github.com/seratch/deepl-for-slack",
-  "keywords": [
-    "Slack",
-    "Slack API",
-    "DeepL Pro",
-    "DeepL API",
-    "Heroku"
-  ],
+  "keywords": ["Slack", "Slack API", "DeepL Pro", "DeepL API", "Heroku"],
   "env": {
     "SLACK_SIGNING_SECRET": {
       "description": "Slack Signing Secret",
@@ -33,6 +27,10 @@
     "SLACK_REQUEST_LOG_ENABLED": {
       "description": "Slack App Request Log Feature (0: disabled, 1: enabled)",
       "value": "0"
+    },
+    "REDIS_URL": {
+      "description": "Connection string to Redis",
+      "value": "redis://…"
     }
   },
   "image": "heroku/nodejs"

@@ -9,6 +9,7 @@ import { DeepLApi } from './deepl';
 import * as runner from './runnner';
 import * as reacjilator from './reacjilator';
 
+import { createAsyncClient } from '@mjplabs/redis-async';
 
 const logLevel = process.env.SLACK_LOG_LEVEL as LogLevel || LogLevel.INFO;
 const logger = new ConsoleLogger();
@@ -26,6 +27,16 @@ const app = new App({
   signingSecret: process.env.SLACK_SIGNING_SECRET
 });
 middleware.enableAll(app);
+
+if (process.env.REDIS_URL === undefined) {
+  console.error("REDIS_URL is not set.")
+  process.exit();
+}
+
+const redisClient = createAsyncClient(process.env.REDIS_URL)
+redisClient.on("error", function(error) {
+  console.error("[redis]", error);
+});
 
 // -----------------------------
 // shortcut
@@ -82,6 +93,11 @@ app.event("reaction_added", async ({ body, client }) => {
     return;
   }
 
+  if (await reacjilator.isAlreadyTranslated(redisClient, channelId, messageTs, lang)) {
+    console.log(`Message was already translated to ${lang}`)
+    return
+  }
+
   const replies = await reacjilator.repliesInThread(client, channelId, messageTs);
   if (replies.messages && replies.messages.length > 0) {
     const message = replies.messages[0];
@@ -93,10 +109,8 @@ app.event("reaction_added", async ({ body, client }) => {
       if (translatedText == null) {
         return;
       }
-      if (reacjilator.isAlreadyPosted(replies, translatedText)) {
-        return;
-      }
       await reacjilator.sayInThread(client, channelId, translatedText, message, withoutUsernames);
+      await reacjilator.markAsTranslated(redisClient, channelId, messageTs, lang)
     }
   }
 });

@@ -2,6 +2,7 @@ import { ConversationsRepliesResponse, Message, Permalink, UserProfileResponse }
 import { ReactionAddedEvent } from './types/reaction-added';
 import { reactionToLang } from './languages';
 import { WebClient } from '@slack/web-api';
+import { AsyncRedisClient } from "@mjplabs/redis-async";
 
 export function lang(event: ReactionAddedEvent): string | null {
   console.log(event);
@@ -26,16 +27,12 @@ export async function repliesInThread(client: WebClient, channel: string, ts: st
   }) as ConversationsRepliesResponse;
 }
 
-export function isAlreadyPosted(replies: ConversationsRepliesResponse, translatedText: string): boolean {
-  if (!replies.messages) {
-    return false;
-  }
-  for (const messageInThread of replies.messages) {
-    if (messageInThread.text && messageInThread.text === translatedText) {
-      return true;
-    }
-  }
-  return false;
+export async function isAlreadyTranslated(redisClient: AsyncRedisClient, channelId: string, messageTs: string, language: string): Promise<boolean> {
+  return await redisClient.runSingle(c => c.sismember(`${channelId}:${messageTs}`, language)) == 1
+}
+
+export async function markAsTranslated(redisClient: AsyncRedisClient, channelId: string, messageTs: string, language: string): Promise<void> {
+  await redisClient.runSingle(c => c.sadd(`${channelId}:${messageTs}`, language))
 }
 
 export async function sayInThread(client: WebClient, channel: string, text: string, message: Message, alteredMessageText: string) {
