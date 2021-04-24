@@ -32,7 +32,9 @@ export async function isAlreadyTranslated(redisClient: AsyncRedisClient, channel
 }
 
 export async function markAsTranslated(redisClient: AsyncRedisClient, channelId: string, messageTs: string, language: string): Promise<void> {
-  await redisClient.runSingle(c => c.sadd(`${channelId}:${messageTs}`, language))
+  const key = `${channelId}:${messageTs}`
+  const week = 60 * 60 * 24 * 7
+  await redisClient.runMultiple(c => c.sadd(key, language).expire(key, week))
 }
 
 export async function sayInThread(client: WebClient, channel: string, text: string, message: Message, alteredMessageText: string) {
